@@ -1,0 +1,9 @@
+/* Symposium AOS-style block entrances, independent from the Automark word effect. */
+(()=>{const root=document.documentElement,reduced=matchMedia('(prefers-reduced-motion: reduce)');
+const definitions=[['.sym-hero .sym-date','up',200],['.sym-hero h1','up',300],['.sym-hero p','up',400],['.sym-hero .actions','up',500],['.sym-portraits','left',200],['.sym-video','right',200],['.sym-about-grid>div:last-child','left',200],['.section-intro','up',200],['.value-card','up',200],['.module-card','up',200],['.mentor-card','up',200],['.proof-grid figure','up',200],['.journey-row','up',200],['.thought','up',200],['.practice-grid article','up',200],['.registration-copy','right',200],['.form-card','left',200],['.faq-layout','up',200],['.final-cta','up',200],['.pain-pill','up',200]];
+if(reduced.matches||!('IntersectionObserver'in window)){root.classList.remove('sym-pending');return;}
+const nodes=[];definitions.forEach(([selector,direction,delay])=>document.querySelectorAll(selector).forEach((node,index)=>{node.classList.add('sym-reveal');node.style.setProperty('--sym-delay',`${delay+Math.min(index*150,450)}ms`);node.dataset.symDirection=direction;nodes.push(node)}));
+root.setAttribute('data-reveal-initialized','');root.classList.remove('sym-pending');root.classList.add('sym-motion');
+const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('sym-visible');else if(entry.boundingClientRect.top>innerHeight)entry.target.classList.remove('sym-visible')}),{threshold:0,rootMargin:'0px 0px -60px 0px'});nodes.forEach(node=>observer.observe(node));
+reduced.addEventListener('change',()=>{if(reduced.matches){root.classList.remove('sym-motion');observer.disconnect()}});document.addEventListener('focusin',()=>nodes.filter(node=>node.contains(document.activeElement)).forEach(node=>node.classList.add('sym-visible')));
+})();
